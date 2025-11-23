@@ -1,0 +1,21 @@
+Write new application on React. Use https://github.com/react-financial/react-financial-charts for financial chart
+Follow redux approach for coding with jest unit tests
+Use clean code approach for all code
+Create C# web api using SingnalR to push notifications to client.
+use onion architecture for web api code. 
+
+I am working to create a historical trading platform to test my strategies on historical data
+
+Create 2 tabs one to select time known time frame, and predict value for another timeframe by day. 
+
+Allow to choose market and set of stocks to run throw.
+
+Create traider account and make buy and sell and close orders. Allow to create stop losses by price or close by number of days. 
+
+
+On graph show open and close position for each stock in a set
+
+in graph Show stock candle chart with volumes and indicators from *.ind file
+
+
+Create FE and WebApi to show stock information from data folder C:\repos\StockMastery\Data
