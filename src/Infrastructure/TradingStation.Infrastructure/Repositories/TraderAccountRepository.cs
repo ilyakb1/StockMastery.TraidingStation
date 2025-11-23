@@ -23,7 +23,7 @@ public class TraderAccountRepository : ITraderAccountRepository
 
     public async Task<TraderAccount?> GetByIdAsync(int id)
     {
-        return await _context.Accounts
+        return await _context.TraderAccounts
             .Include(a => a.Positions)
             .Include(a => a.Orders)
             .FirstOrDefaultAsync(a => a.Id == id);
@@ -31,7 +31,7 @@ public class TraderAccountRepository : ITraderAccountRepository
 
     public async Task<IEnumerable<TraderAccount>> GetAllAsync()
     {
-        return await _context.Accounts
+        return await _context.TraderAccounts
             .Include(a => a.Positions)
             .Include(a => a.Orders)
             .ToListAsync();
@@ -39,14 +39,14 @@ public class TraderAccountRepository : ITraderAccountRepository
 
     public async Task<TraderAccount> AddAsync(TraderAccount account)
     {
-        _context.Accounts.Add(account);
+        _context.TraderAccounts.Add(account);
         await _context.SaveChangesAsync();
         return account;
     }
 
     public async Task UpdateAsync(TraderAccount account)
     {
-        _context.Accounts.Update(account);
+        _context.TraderAccounts.Update(account);
         await _context.SaveChangesAsync();
     }
 }
