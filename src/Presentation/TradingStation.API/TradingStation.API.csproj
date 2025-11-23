@@ -8,6 +8,19 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.0">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="10.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Infrastructure\TradingStation.Infrastructure\TradingStation.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\Application\TradingStation.Application\TradingStation.Application.csproj" />
+    <ProjectReference Include="..\..\Core\TradingStation.TradingEngine\TradingStation.TradingEngine.csproj" />
+    <ProjectReference Include="..\..\Application\TradingStation.Backtesting\TradingStation.Backtesting.csproj" />
   </ItemGroup>
 
 </Project>

@@ -101,7 +101,7 @@ public class BacktestRunner
                             Quantity = signal.Quantity,
                             Price = orderResult.ExecutionPrice,
                             Commission = orderResult.Commission,
-                            PositionId = orderResult.PositionId
+                            PositionId = orderResult.PositionId ?? 0
                         });
 
                         _logger.LogInformation(
@@ -155,7 +155,7 @@ public class BacktestRunner
                 currentPrice.Close,
                 currentDate);
 
-            if (stopLossEval.ShouldClose)
+            if (stopLossEval.ShouldTrigger)
             {
                 var closeRequest = new OrderRequest
                 {
@@ -180,7 +180,7 @@ public class BacktestRunner
                         Quantity = position.Quantity,
                         Price = closeResult.ExecutionPrice,
                         Commission = closeResult.Commission,
-                        PositionId = closeResult.PositionId,
+                        PositionId = closeResult.PositionId ?? 0,
                         ExitReason = stopLossEval.Reason
                     });
 
