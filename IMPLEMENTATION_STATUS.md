@@ -50,42 +50,56 @@
 - ✅ Infrastructure: EF Core, CsvHelper, Skender.Stock.Indicators, Caching
 - ✅ Data.Backtesting: Caching
 
+### 8. Infrastructure - Repositories (100%)
+- ✅ `IStockRepository` interface with all methods
+- ✅ `StockRepository` implementation with CSV import
+- ✅ `ITraderAccountRepository` interface and implementation
+- ✅ `IPositionRepository` interface and implementation
+- ✅ `IOrderRepository` interface and implementation
+- ✅ CSV mapping with CsvHelper (`StockDataCsvRecord`)
+- ✅ Proper domain model relationships (StockPrice → Indicator)
+- ✅ Fixed DbSet references (TraderAccounts, not Accounts)
+
+### 9. Backtesting Engine (95%)
+- ✅ `BacktestRunner` - Complete main backtest loop
+- ✅ `ITradingStrategy` interface
+- ✅ `MovingAverageCrossoverStrategy` implementation
+- ✅ Performance metrics calculation (Sharpe ratio, max drawdown, win rate)
+- ✅ `BacktestResult`, `BacktestConfiguration` models
+- ✅ `TradeRecord`, `DailySnapshot` models
+- ✅ Temporal safety enforcement (AdvanceTime calls)
+- ✅ Stop-loss evaluation integration
+- ⏳ LoadHistoricalDataAsync needs connection to StockRepository
+
+### 10. API Layer (90%)
+- ✅ `Program.cs` complete dependency injection setup
+  - DbContext with SQL Server
+  - All repositories registered
+  - All Trading Engine services registered
+  - Memory caching
+  - CORS policy
+  - Swagger/OpenAPI
+- ✅ `appsettings.json` configuration
+  - Connection string
+  - Logging levels
+  - Stock data directory
+- ⏳ Controllers not yet implemented
+  - Need `StocksController`
+  - Need `BacktestController`
+  - Need `AccountsController`
+
 ## 🚧 In Progress / To Complete
 
-### 8. Infrastructure - Repositories (0%)
-Need to implement:
-- `IStockRepository` interface and implementation
-- `StockFileReader` for reading .ind CSV files
-- CSV mapping with CsvHelper
-- Skender integration for indicator calculations
-
-### 9. Backtesting Engine (0%)
-Need to implement:
-- `BacktestRunner` - Main backtest loop
-- `IStrategy` interface
-- Sample strategies (MA Crossover, RSI)
-- `PerformanceMetricsCalculator` (Sharpe ratio, max drawdown, win rate)
-- `BacktestResult` models
-
-### 10. Application Layer (0%)
+### 11. Application Layer (0%)
 Need to implement:
 - `BacktestService` - Orchestrates backtesting
 - `StockService` - Stock data operations
 - DTOs and AutoMapper profiles
 - FluentValidation validators
 
-### 11. API Layer (0%)
-Need to implement:
-- `StocksController` - Stock data endpoints
-- `BacktestController` - Backtesting endpoints
-- `Program.cs` dependency injection setup
-- `appsettings.json` configuration
-- CORS configuration
-- Swagger configuration
-
 ### 12. Database Migrations (0%)
 Need to:
-- Create initial migration
+- Create initial migration (requires .NET SDK)
 - Apply to database
 - Seed with sample data (optional)
 
@@ -101,23 +115,25 @@ React application (separate implementation)
 
 ## 📋 Next Steps (Priority Order)
 
-### Immediate (Critical Path)
-1. **Create Stock Repository** - Read .ind files from `C:\repos\StockMastery\Data`
-2. **Create Database Migration** - Initialize database schema
-3. **Implement Backtest Runner** - Core backtesting logic
-4. **Wire up DI in API** - Make everything work together
-5. **Create simple test** - Verify temporal safety
+### Immediate (Critical Path) - Updated Nov 23, 2024
+1. ✅ ~~Create Stock Repository~~ - **DONE**: StockRepository complete with CSV import
+2. ✅ ~~Wire up DI in API~~ - **DONE**: Program.cs fully configured
+3. ✅ ~~Implement Backtest Runner~~ - **DONE**: BacktestRunner 95% complete
+4. ⏳ **Create Database Migration** - Requires .NET SDK (run locally)
+5. ⏳ **Create API Controllers** - StocksController, BacktestController, AccountsController
+6. ⏳ **Write Temporal Safety Tests** - Critical for verifying backtest integrity
 
 ### Short Term
-6. Implement BacktestService
-7. Create BacktestController
-8. Add sample strategy (MA Crossover)
-9. Write unit tests for temporal guards
-10. Create README with setup instructions
+7. Connect BacktestRunner.LoadHistoricalDataAsync to StockRepository
+8. Implement BacktestService (orchestration layer)
+9. Implement StockService (data access layer)
+10. Write unit tests for Trading Engine components
+11. Create README with setup instructions
 
 ### Medium Term
-11. Implement StockService
-12. Add performance metrics calculation
+12. Add AutoMapper profiles for DTOs
+13. Add FluentValidation validators
+14. Implement additional trading strategies (RSI, Bollinger Bands)
 13. Implement multiple strategies
 14. Add API documentation
 15. Create sample backtest runs
