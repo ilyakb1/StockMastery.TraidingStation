@@ -81,7 +81,8 @@ public class BacktestController : ControllerBase
                 StartDate = request.StartDate,
                 EndDate = request.EndDate,
                 InitialCapital = account.InitialCapital,
-                Strategy = strategy
+                Strategy = strategy,
+                StockData = stockData
             };
 
             // Run backtest
@@ -140,6 +141,46 @@ public class BacktestController : ControllerBase
 
     private BacktestResultDto MapToDto(BacktestResult result)
     {
+        // Group trades by position to create paired entry/exit trades
+        var pairedTrades = new List<PairedTradeDto>();
+        var tradesByPosition = result.Trades
+            .GroupBy(t => t.PositionId)
+            .Where(g => g.Key > 0);
+
+        foreach (var positionGroup in tradesByPosition)
+        {
+            var buyTrade = positionGroup.FirstOrDefault(t => t.OrderType == Contracts.OrderType.Buy);
+            var sellTrade = positionGroup.FirstOrDefault(t => t.OrderType == Contracts.OrderType.Sell);
+
+            if (buyTrade != null)
+            {
+                var entryPrice = buyTrade.Price;
+                var exitPrice = sellTrade?.Price ?? 0;
+                var quantity = buyTrade.Quantity;
+
+                var profitLoss = sellTrade != null
+                    ? (exitPrice - entryPrice) * quantity - buyTrade.Commission - (sellTrade.Commission)
+                    : 0;
+
+                var returnPercent = entryPrice > 0 && sellTrade != null
+                    ? ((exitPrice - entryPrice) / entryPrice) * 100
+                    : 0;
+
+                pairedTrades.Add(new PairedTradeDto
+                {
+                    Symbol = buyTrade.Symbol,
+                    EntryDate = buyTrade.Date,
+                    EntryPrice = entryPrice,
+                    ExitDate = sellTrade?.Date,
+                    ExitPrice = sellTrade != null ? exitPrice : (decimal?)null,
+                    Quantity = quantity,
+                    ProfitLoss = profitLoss,
+                    ReturnPercent = returnPercent,
+                    ExitReason = sellTrade?.ExitReason
+                });
+            }
+        }
+
         return new BacktestResultDto
         {
             AccountId = result.AccountId,
@@ -155,17 +196,7 @@ public class BacktestController : ControllerBase
             WinRate = result.WinRate,
             WinRatePercent = result.WinRate * 100,
             TotalTrades = result.TotalTrades,
-            Trades = result.Trades.Select(t => new TradeDto
-            {
-                Date = t.Date,
-                Symbol = t.Symbol,
-                OrderType = t.OrderType.ToString(),
-                Quantity = t.Quantity,
-                Price = t.Price,
-                Commission = t.Commission,
-                PositionId = t.PositionId,
-                ExitReason = t.ExitReason
-            }).ToList(),
+            Trades = pairedTrades,
             DailySnapshots = result.DailySnapshots.Select(s => new DailySnapshotDto
             {
                 Date = s.Date,
@@ -213,19 +244,20 @@ public class BacktestResultDto
     public decimal WinRate { get; set; }
     public decimal WinRatePercent { get; set; }
     public int TotalTrades { get; set; }
-    public List<TradeDto> Trades { get; set; } = new();
+    public List<PairedTradeDto> Trades { get; set; } = new();
     public List<DailySnapshotDto> DailySnapshots { get; set; } = new();
 }
 
-public class TradeDto
+public class PairedTradeDto
 {
-    public DateTime Date { get; set; }
     public string Symbol { get; set; } = string.Empty;
-    public string OrderType { get; set; } = string.Empty;
+    public DateTime EntryDate { get; set; }
+    public decimal EntryPrice { get; set; }
+    public DateTime? ExitDate { get; set; }
+    public decimal? ExitPrice { get; set; }
     public int Quantity { get; set; }
-    public decimal Price { get; set; }
-    public decimal Commission { get; set; }
-    public int PositionId { get; set; }
+    public decimal ProfitLoss { get; set; }
+    public decimal ReturnPercent { get; set; }
     public string? ExitReason { get; set; }
 }
 

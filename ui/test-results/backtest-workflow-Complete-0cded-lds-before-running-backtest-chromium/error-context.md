@@ -1,0 +1,88 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e3]:
+  - navigation [ref=e4]:
+    - generic [ref=e7]:
+      - generic [ref=e8]:
+        - img [ref=e9]
+        - generic [ref=e11]: Trading Station
+      - generic [ref=e12]:
+        - link "Dashboard" [ref=e13] [cursor=pointer]:
+          - /url: /
+          - img [ref=e14]
+          - text: Dashboard
+        - link "Run Backtest" [ref=e16] [cursor=pointer]:
+          - /url: /backtest
+          - img [ref=e17]
+          - text: Run Backtest
+        - link "Accounts" [ref=e20] [cursor=pointer]:
+          - /url: /accounts
+          - img [ref=e21]
+          - text: Accounts
+  - main [ref=e25]:
+    - generic [ref=e26]:
+      - generic [ref=e27]:
+        - heading "Run Backtest" [level=1] [ref=e28]
+        - paragraph [ref=e29]: Configure and execute a backtest with historical data
+      - generic [ref=e30]:
+        - heading "Backtest Configuration" [level=2] [ref=e32]
+        - generic [ref=e33]:
+          - generic [ref=e34]:
+            - generic [ref=e35]: Trading Account
+            - combobox [ref=e36]:
+              - option "Select an account" [selected]
+              - option "Test Account 1 ($100,000)"
+              - option "Test Account 2 ($50,000)"
+              - option "Test Account 1763980360339 ($150,000)"
+              - option "Integration Test 1763980364951 ($100,000)"
+              - option "Test Account 1763980470557 ($150,000)"
+              - option "Integration Test 1763980473871 ($100,000)"
+              - option "Test Account 1763980553220 ($150,000)"
+              - option "Integration Test 1763980556808 ($100,000)"
+              - option "Test Account 1763980638854 ($150,000)"
+              - option "Integration Test 1763980642465 ($100,000)"
+          - generic [ref=e37]:
+            - generic [ref=e38]:
+              - generic [ref=e39]: Start Date
+              - textbox [ref=e40]: 2024-01-01
+            - generic [ref=e41]:
+              - generic [ref=e42]: End Date
+              - textbox [ref=e43]: 2024-12-31
+          - generic [ref=e44]:
+            - generic [ref=e45]: Select Symbols
+            - generic [ref=e47]:
+              - generic [ref=e48] [cursor=pointer]:
+                - checkbox "AAPL" [ref=e49]
+                - generic [ref=e50]: AAPL
+              - generic [ref=e51] [cursor=pointer]:
+                - checkbox "AMZN" [ref=e52]
+                - generic [ref=e53]: AMZN
+              - generic [ref=e54] [cursor=pointer]:
+                - checkbox "GOOGL" [ref=e55]
+                - generic [ref=e56]: GOOGL
+              - generic [ref=e57] [cursor=pointer]:
+                - checkbox "MSFT" [ref=e58]
+                - generic [ref=e59]: MSFT
+              - generic [ref=e60] [cursor=pointer]:
+                - checkbox "TSLA" [ref=e61]
+                - generic [ref=e62]: TSLA
+          - generic [ref=e63]:
+            - 'heading "Strategy: Moving Average Crossover" [level=3] [ref=e64]'
+            - generic [ref=e65]:
+              - generic [ref=e66]:
+                - generic [ref=e67]: Short Period
+                - spinbutton [ref=e68]: "20"
+              - generic [ref=e69]:
+                - generic [ref=e70]: Long Period
+                - spinbutton [ref=e71]: "50"
+              - generic [ref=e72]:
+                - generic [ref=e73]: Position Size
+                - spinbutton [ref=e74]: "100"
+          - generic [ref=e76]:
+            - img [ref=e77]
+            - paragraph [ref=e80]: This backtest uses temporal safety to prevent future data leakage. The simulation advances day-by-day and can only access historical data.
+          - button "Run Backtest" [disabled] [ref=e82]:
+            - img [ref=e83]
+            - text: Run Backtest
+```

@@ -47,40 +47,51 @@ export default function BacktestResults() {
   }
 
   // Calculate additional metrics
-  const totalReturn = result.totalReturn
-  const totalReturnPercent = result.totalReturnPercent
-  const sharpeRatio = result.sharpeRatio
-  const maxDrawdown = result.maxDrawdown
-  const maxDrawdownPercent = result.maxDrawdownPercent
-  const winRate = result.winRate
-  const totalTrades = result.totalTrades
-  const winningTrades = result.winningTrades
-  const losingTrades = result.losingTrades
-  const avgWin = result.averageWin
-  const avgLoss = result.averageLoss
+  const totalReturn = result.totalReturn || 0
+  const totalReturnPercent = result.totalReturnPercent || 0
+  const sharpeRatio = result.sharpeRatio || 0
+  const maxDrawdown = result.maxDrawdown || 0
+  const maxDrawdownPercent = result.maxDrawdownPercent || 0
+  const winRate = result.winRatePercent || result.winRate || 0
+  const totalTrades = result.totalTrades || 0
+
+  // Calculate winning/losing trades from trades array
+  const winningTrades = result.trades?.filter((t: any) => (t.profitLoss || 0) > 0).length || 0
+  const losingTrades = result.trades?.filter((t: any) => (t.profitLoss || 0) < 0).length || 0
+
+  // Calculate average win/loss
+  const wins = result.trades?.filter((t: any) => (t.profitLoss || 0) > 0) || []
+  const losses = result.trades?.filter((t: any) => (t.profitLoss || 0) < 0) || []
+  const avgWin = wins.length > 0 ? wins.reduce((sum: number, t: any) => sum + (t.profitLoss || 0), 0) / wins.length : 0
+  const avgLoss = losses.length > 0 ? losses.reduce((sum: number, t: any) => sum + (t.profitLoss || 0), 0) / losses.length : 0
   const profitFactor = avgLoss !== 0 ? Math.abs(avgWin / avgLoss) : 0
 
   // Prepare equity curve data
-  const equityData = result.dailySnapshots.map((snapshot: { date: string; equity: number; cash: number }) => ({
+  const equityData = (result.dailySnapshots || []).map((snapshot: { date: string; totalEquity: number; cash: number }) => ({
     date: new Date(snapshot.date).toLocaleDateString(),
-    equity: snapshot.equity,
-    cash: snapshot.cash,
+    equity: snapshot.totalEquity || 0,
+    cash: snapshot.cash || 0,
   }))
 
   // Prepare monthly returns data
   const monthlyReturnsData: { [key: string]: number } = {}
-  result.dailySnapshots.forEach((snapshot: { date: string; equity: number; cash: number }, index: number) => {
-    if (index === 0) return
-    const date = new Date(snapshot.date)
-    const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`
-    const prevEquity = result.dailySnapshots[index - 1].equity
-    const returnPct = ((snapshot.equity - prevEquity) / prevEquity) * 100
+  if (result.dailySnapshots && result.dailySnapshots.length > 0) {
+    result.dailySnapshots.forEach((snapshot: { date: string; totalEquity: number; cash: number }, index: number) => {
+      if (index === 0) return
+      const date = new Date(snapshot.date)
+      const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`
+      const prevEquity = result.dailySnapshots[index - 1].totalEquity || 0
+      const currentEquity = snapshot.totalEquity || 0
+      if (prevEquity > 0) {
+        const returnPct = ((currentEquity - prevEquity) / prevEquity) * 100
 
-    if (!monthlyReturnsData[monthKey]) {
-      monthlyReturnsData[monthKey] = 0
-    }
-    monthlyReturnsData[monthKey] += returnPct
-  })
+        if (!monthlyReturnsData[monthKey]) {
+          monthlyReturnsData[monthKey] = 0
+        }
+        monthlyReturnsData[monthKey] += returnPct
+      }
+    })
+  }
 
   const monthlyReturnsChartData = Object.entries(monthlyReturnsData).map(
     ([month, return_]) => ({

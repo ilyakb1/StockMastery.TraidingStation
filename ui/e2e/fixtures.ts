@@ -93,37 +93,7 @@ export class TradingStationPage {
     await this.waitForLoad()
   }
 
-  async mockApiResponse(endpoint: string, data: any) {
-    await this.page.route(`**/api${endpoint}`, (route) => {
-      route.fulfill({
-        status: 200,
-        contentType: 'application/json',
-        body: JSON.stringify(data),
-      })
-    })
-  }
-
-  async mockGetAccounts(accounts: Account[]) {
-    await this.mockApiResponse('/accounts', accounts)
-  }
-
-  async mockGetStocks(stocks: Stock[]) {
-    await this.mockApiResponse('/stocks', stocks)
-  }
-
-  async mockGetSymbols(symbols: string[]) {
-    await this.mockApiResponse('/stocks/symbols', symbols)
-  }
-
-  async mockRunBacktest(result: BacktestResult) {
-    await this.page.route('**/api/backtest/run', (route) => {
-      route.fulfill({
-        status: 200,
-        contentType: 'application/json',
-        body: JSON.stringify(result),
-      })
-    })
-  }
+  // API mocking removed - tests now use real API calls to Docker containers
 
   async createAccount(name: string, initialCapital: number) {
     await this.page.click('text=Create Account')

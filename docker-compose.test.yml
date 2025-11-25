@@ -1,0 +1,49 @@
+version: '3.8'
+
+# Docker Compose configuration for E2E testing
+# This extends docker-compose.yml with test-specific settings
+
+services:
+  # SQL Server Database (Test)
+  db:
+    extends:
+      file: docker-compose.yml
+      service: db
+    container_name: tradingstation-db-test
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=TestPassword123!
+      - MSSQL_PID=Developer
+    ports:
+      - "1434:1433"  # Different port to avoid conflicts
+    volumes:
+      - sqlserver-test-data:/var/opt/mssql
+      - ./scripts/init-db.sql:/docker-entrypoint-initdb.d/init-db.sql:ro
+
+  # .NET API (Test)
+  api:
+    extends:
+      file: docker-compose.yml
+      service: api
+    container_name: tradingstation-api-test
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Docker
+      - ConnectionStrings__DefaultConnection=Server=db;Database=TradingStationTest;User Id=sa;Password=TestPassword123!;TrustServerCertificate=True;MultipleActiveResultSets=true
+      - ASPNETCORE_URLS=http://+:8080
+    ports:
+      - "5001:8080"  # Different port to avoid conflicts
+
+  # React UI (Test)
+  ui:
+    extends:
+      file: docker-compose.yml
+      service: ui
+    container_name: tradingstation-ui-test
+    environment:
+      - VITE_API_URL=http://localhost:5001
+    ports:
+      - "3001:80"  # Different port to avoid conflicts
+
+volumes:
+  sqlserver-test-data:
+    driver: local

@@ -33,15 +33,18 @@ public class BacktestRunner
             "Starting backtest from {Start} to {End} with ${Capital:N2}",
             config.StartDate, config.EndDate, config.InitialCapital);
 
-        // Load historical data for all symbols
-        var stockData = await LoadHistoricalDataAsync(config);
+        // Validate stock data was provided
+        if (config.StockData == null || config.StockData.Count == 0)
+        {
+            throw new ArgumentException("Stock data must be provided in BacktestConfiguration");
+        }
 
         // Create temporal-safe data provider
         var cache = new MemoryCache(new MemoryCacheOptions());
         var dataProvider = new BacktestingMarketDataProvider(
             config.StartDate,
             cache,
-            stockData);
+            config.StockData);
 
         // Create account
         var account = await _accountManager.GetAccountAsync(config.AccountId);
@@ -220,24 +223,6 @@ public class BacktestRunner
         });
     }
 
-    private async Task<Dictionary<string, List<StockPriceData>>> LoadHistoricalDataAsync(
-        BacktestConfiguration config)
-    {
-        // This will be implemented to load from database
-        // For now, return empty dictionary
-        _logger.LogInformation("Loading historical data for backtest");
-
-        var data = new Dictionary<string, List<StockPriceData>>();
-
-        // TODO: Load from database using StockRepository
-        // var stocks = await _stockRepository.GetAllStocksAsync();
-        // foreach (var stock in stocks)
-        // {
-        //     data[stock.Symbol] = stock.Prices.Select(p => new StockPriceData { ... }).ToList();
-        // }
-
-        return data;
-    }
 
     private void CalculateFinalMetrics(BacktestResult result)
     {
@@ -310,6 +295,7 @@ public class BacktestConfiguration
     public DateTime EndDate { get; set; }
     public decimal InitialCapital { get; set; }
     public ITradingStrategy Strategy { get; set; } = null!;
+    public Dictionary<string, List<StockPriceData>> StockData { get; set; } = new();
 }
 
 public class BacktestResult

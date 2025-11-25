@@ -1,0 +1,56 @@
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Documentation
+*.md
+README.md
+CLAUDE.md
+IMPLEMENTATION_GUIDE.md
+IMPLEMENTATION_STATUS.md
+E2E_TESTS_COMPLETE.md
+LICENSE
+
+# IDE
+.vs
+.vscode
+.idea
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Build results
+**/bin/
+**/obj/
+**/out/
+**/publish/
+
+# Test results
+**/TestResults/
+**/test-results/
+**/.playwright/
+
+# Node.js
+**/node_modules/
+**/npm-debug.log
+**/yarn-error.log
+**/.npm
+
+# Docker
+docker-compose*.yml
+Dockerfile
+.dockerignore
+
+# Scripts
+scripts/
+
+# Specs
+Specs/
+
+# UI (not needed for API)
+ui/
+
+# Tests (not needed in production)
+tests/

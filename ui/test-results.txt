@@ -1,0 +1,83 @@
+
+> trading-station-ui@1.0.0 test:e2e
+> playwright test
+
+
+Running 68 tests using 12 workers
+
+  ok  1 [chromium] › e2e\accounts.spec.ts:27:3 › Accounts Management Page › should display Create Account button (1.1s)
+  -  13 [chromium] › e2e\accounts.spec.ts:162:8 › Accounts Management Page › should display Inactive status badge in gray
+  ok  2 [chromium] › e2e\accounts.spec.ts:54:3 › Accounts Management Page › should hide create account form when clicking Cancel button (1.2s)
+  -  15 [chromium] › e2e\accounts.spec.ts:176:8 › Accounts Management Page › should show empty state when no accounts exist
+  ok  3 [chromium] › e2e\accounts.spec.ts:20:3 › Accounts Management Page › should display accounts page title and description (1.3s)
+  ok  5 [chromium] › e2e\accounts.spec.ts:33:3 › Accounts Management Page › should show create account form when clicking Create Account button (1.3s)
+  -  18 [chromium] › e2e\accounts.spec.ts:205:8 › Accounts Management Page › should disable Create button while submitting
+  ok  6 [chromium] › e2e\accounts.spec.ts:108:3 › Accounts Management Page › should display accounts table with all columns (1.2s)
+  -  20 [chromium] › e2e\accounts.spec.ts:218:8 › Accounts Management Page › should handle API errors gracefully
+  ok  4 [chromium] › e2e\accounts.spec.ts:70:3 › Accounts Management Page › should require account name to create account (1.5s)
+  ok 11 [chromium] › e2e\accounts.spec.ts:146:3 › Accounts Management Page › should display negative P&L in red color (1.3s)
+  ok  8 [chromium] › e2e\accounts.spec.ts:129:3 › Accounts Management Page › should calculate P&L correctly for each account (1.3s)
+  ok  7 [chromium] › e2e\accounts.spec.ts:119:3 › Accounts Management Page › should display all accounts in the table (1.3s)
+  ok 12 [chromium] › e2e\accounts.spec.ts:154:3 › Accounts Management Page › should display Active status badge in green (1.3s)
+  ok  9 [chromium] › e2e\accounts.spec.ts:138:3 › Accounts Management Page › should display positive P&L in green color (1.3s)
+  ok 14 [chromium] › e2e\accounts.spec.ts:167:3 › Accounts Management Page › should format dates correctly (1.1s)
+  -  28 [chromium] › e2e\backtest.spec.ts:64:8 › Backtest Configuration Page › should display available symbols as checkboxes
+  ok 16 [chromium] › e2e\accounts.spec.ts:181:3 › Accounts Management Page › should validate minimum capital amount (1.0s)
+  ok 17 [chromium] › e2e\accounts.spec.ts:195:3 › Accounts Management Page › should have default initial capital value (1.0s)
+  ok 19 [chromium] › e2e\accounts.spec.ts:210:3 › Accounts Management Page › should highlight row on hover (1.1s)
+  ok 21 [chromium] › e2e\backtest.spec.ts:17:3 › Backtest Configuration Page › should display backtest page title and description (988ms)
+  ok 22 [chromium] › e2e\backtest.spec.ts:21:3 › Backtest Configuration Page › should display backtest configuration section (1.0s)
+  ok 24 [chromium] › e2e\backtest.spec.ts:34:3 › Backtest Configuration Page › should populate account dropdown with available accounts (1.0s)
+  -  35 [chromium] › e2e\backtest.spec.ts:115:8 › Backtest Configuration Page › should navigate to results page after successful backtest
+  -  36 [chromium] › e2e\backtest.spec.ts:120:8 › Backtest Configuration Page › should show loading state while backtest is running
+  -  37 [chromium] › e2e\backtest.spec.ts:124:8 › Backtest Configuration Page › should handle API errors and show error message
+  ok 26 [chromium] › e2e\backtest.spec.ts:60:3 › Backtest Configuration Page › should display symbol selection section (1.0s)
+  ok 23 [chromium] › e2e\backtest.spec.ts:27:3 › Backtest Configuration Page › should display account selection dropdown (1.1s)
+  ok 25 [chromium] › e2e\backtest.spec.ts:41:3 › Backtest Configuration Page › should display date range inputs (1.1s)
+  ok 27 [chromium] › e2e\backtest.spec.ts:49:3 › Backtest Configuration Page › should have default date values (1.1s)
+  ok 10 [chromium] › e2e\accounts.spec.ts:81:3 › Accounts Management Page › should create new account with valid data (2.5s)
+  ok 29 [chromium] › e2e\backtest.spec.ts:69:3 › Backtest Configuration Page › should allow selecting multiple symbols (939ms)
+  ok 30 [chromium] › e2e\backtest.spec.ts:81:3 › Backtest Configuration Page › should display Moving Average Crossover strategy section (954ms)
+  ok 31 [chromium] › e2e\backtest.spec.ts:87:3 › Backtest Configuration Page › should display strategy parameters (945ms)
+  ok 33 [chromium] › e2e\backtest.spec.ts:103:3 › Backtest Configuration Page › should display temporal safety information banner (1.0s)
+  ok 32 [chromium] › e2e\backtest.spec.ts:93:3 › Backtest Configuration Page › should have default strategy parameter values (1.1s)
+  ok 34 [chromium] › e2e\backtest.spec.ts:110:3 › Backtest Configuration Page › should display Run Backtest button (1.0s)
+  ok 40 [chromium] › e2e\backtest.spec.ts:150:3 › Backtest Configuration Page › should allow deselecting symbols (996ms)
+  ok 41 [chromium] › e2e\backtest.spec.ts:164:3 › Backtest Configuration Page › should have responsive layout (1.0s)
+  ok 39 [chromium] › e2e\backtest.spec.ts:137:3 › Backtest Configuration Page › should validate strategy parameters have minimum values (1.0s)
+  -  50 [chromium] › e2e\dashboard.spec.ts:118:8 › Dashboard Page › should show empty state when no accounts exist
+  ok 38 [chromium] › e2e\backtest.spec.ts:128:3 › Backtest Configuration Page › should validate date inputs are required (1.0s)
+  ok 42 [chromium] › e2e\dashboard.spec.ts:19:3 › Dashboard Page › should display dashboard title and description (1.1s)
+  ok 43 [chromium] › e2e\dashboard.spec.ts:27:3 › Dashboard Page › should display statistics cards with correct data (1.2s)
+  ok 44 [chromium] › e2e\dashboard.spec.ts:39:3 › Dashboard Page › should display accounts table with all columns (995ms)
+  ok 45 [chromium] › e2e\dashboard.spec.ts:50:3 › Dashboard Page › should display account data in table rows (977ms)
+  -  58 [chromium] › e2e\integration.spec.ts:87:8 › Complete User Workflows › should complete full workflow: create account -> run backtest -> view results
+  ok 46 [chromium] › e2e\dashboard.spec.ts:60:3 › Dashboard Page › should calculate and display P&L correctly (933ms)
+  ok 47 [chromium] › e2e\dashboard.spec.ts:69:3 › Dashboard Page › should display positive P&L in green (973ms)
+  -  61 [chromium] › e2e\results.spec.ts:11:8 › Backtest Results Page › should display results page title
+  -  62 [chromium] › e2e\results.spec.ts:16:8 › Backtest Results Page › should display date range of backtest
+  -  63 [chromium] › e2e\results.spec.ts:20:8 › Backtest Results Page › should display Back to Backtest button
+  -  64 [chromium] › e2e\results.spec.ts:24:8 › Backtest Results Page › should navigate back to backtest page when clicking back button
+  -  65 [chromium] › e2e\results.spec.ts:28:8 › Backtest Results Page › should display all performance metric cards
+  -  66 [chromium] › e2e\results.spec.ts:32:8 › Backtest Results Page › should display Total Return metric correctly
+  -  67 [chromium] › e2e\results.spec.ts:36:8 › Backtest Results Page › should display positive return in green with TrendingUp icon
+  -  68 [chromium] › e2e\results.spec.ts:40:8 › Backtest Results Page › should display Sharpe Ratio correctly
+  ok 48 [chromium] › e2e\dashboard.spec.ts:77:3 › Dashboard Page › should display negative P&L in red (994ms)
+  ok 49 [chromium] › e2e\dashboard.spec.ts:85:3 › Dashboard Page › should show loading state when data is being fetched (1.0s)
+  ok 52 [chromium] › e2e\dashboard.spec.ts:126:3 › Dashboard Page › should display date in correct format (1.0s)
+  ok 51 [chromium] › e2e\dashboard.spec.ts:100:3 › Dashboard Page › should navigate to Accounts page when clicking Accounts link (1.1s)
+  ok 54 [chromium] › e2e\dashboard.spec.ts:134:3 › Dashboard Page › should have responsive layout (1.0s)
+  ok 53 [chromium] › e2e\dashboard.spec.ts:109:3 › Dashboard Page › should navigate to Backtest page when clicking Run Backtest link (1.1s)
+  ok 59 [chromium] › e2e\integration.spec.ts:96:3 › Complete User Workflows › should maintain application state across page transitions (959ms)
+  ok 55 [chromium] › e2e\integration.spec.ts:11:3 › Complete User Workflows › should navigate from Dashboard to Accounts to Backtest (1.3s)
+  ok 60 [chromium] › e2e\integration.spec.ts:118:3 › Complete User Workflows › should display consistent data across pages (1.0s)
+  ok 57 [chromium] › e2e\integration.spec.ts:69:3 › Complete User Workflows › should navigate between all pages successfully (1.2s)
+  ok 56 [chromium] › e2e\integration.spec.ts:36:3 › Complete User Workflows › should create account and see it in dashboard (2.1s)
+
+  18 skipped
+  50 passed (8.7s)
+
+To open last HTML report run:
+[36m[39m
+[36m  npx playwright show-report[39m
+[36m[39m

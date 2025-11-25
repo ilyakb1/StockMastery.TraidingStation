@@ -8,8 +8,8 @@ export default function Backtest() {
   const navigate = useNavigate()
   const [formData, setFormData] = useState<BacktestRequest>({
     accountId: 0,
-    startDate: '2023-01-01',
-    endDate: '2023-12-31',
+    startDate: '2024-01-01',
+    endDate: '2024-12-31',
     symbols: [],
     strategyType: 'ma_crossover',
     shortPeriod: 20,

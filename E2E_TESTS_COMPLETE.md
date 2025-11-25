@@ -1,8 +1,106 @@
-# Trading Station E2E Tests - Implementation Complete
+# Trading Station E2E Tests - Docker Complete
 
 ## Overview
 
-Comprehensive end-to-end testing suite has been implemented for the Trading Station React UI using Playwright. All tests are based on the specifications defined in [CLAUDE.md](CLAUDE.md) and validate complete user workflows.
+Complete end-to-end testing infrastructure with Docker containers for the Trading Station application. This guide covers:
+- **Docker containerization** for database, API, and UI
+- **Playwright E2E tests** validating all user workflows
+- **Automated test orchestration** that spins up all services
+- **Test data seeding** and validation
+
+All tests are based on specifications in [CLAUDE.md](CLAUDE.md).
+
+## Quick Start
+
+### Run Complete E2E Test Suite with Docker
+
+**Windows (PowerShell)**:
+```powershell
+cd c:\repos\StockMastery\TraidingStation
+.\scripts\run-e2e-tests.ps1
+```
+
+**Linux/Mac (Bash)**:
+```bash
+cd /repos/StockMastery/TraidingStation
+chmod +x scripts/run-e2e-tests.sh
+./scripts/run-e2e-tests.sh
+```
+
+This single command will:
+1. Build Docker images (database, API, UI)
+2. Start all containers
+3. Wait for services to be healthy
+4. Seed test data
+5. Run Playwright E2E tests
+6. Generate test reports
+7. Clean up containers
+
+## Docker Infrastructure
+
+### Services
+
+#### 1. SQL Server Database (`db`)
+- **Image**: `mcr.microsoft.com/mssql/server:2022-latest`
+- **Port**: 1433
+- **Credentials**: sa / TradingStation2024!
+- **Database**: TradingStation
+- **Volume**: `sqlserver-data` (persists data)
+- **Health Check**: SQL connection test every 10s
+- **Files**:
+  - [scripts/init-db.sql](scripts/init-db.sql) - Database initialization
+
+#### 2. .NET API (`api`)
+- **Built from**: [src/Presentation/TradingStation.API/Dockerfile](src/Presentation/TradingStation.API/Dockerfile)
+- **Port**: 5000 (HTTP)
+- **Environment**: Docker
+- **Health Check**: `/health` endpoint
+- **Features**:
+  - Auto-runs EF Core migrations on startup
+  - Health check with database connectivity
+  - CORS enabled for UI
+- **Connection**: Points to `db` container
+
+#### 3. React UI (`ui`)
+- **Built from**: [ui/Dockerfile](ui/Dockerfile)
+- **Port**: 3000
+- **Base**: Nginx Alpine
+- **Features**:
+  - Multi-stage build (build + runtime)
+  - Gzip compression
+  - SPA routing support
+  - API proxy configuration
+- **Config**: [ui/nginx.conf](ui/nginx.conf)
+
+### Docker Configuration Files
+
+| File | Purpose |
+|------|---------|
+| [docker-compose.yml](docker-compose.yml) | Main services configuration |
+| [docker-compose.test.yml](docker-compose.test.yml) | Test environment overrides |
+| [src/Presentation/TradingStation.API/Dockerfile](src/Presentation/TradingStation.API/Dockerfile) | API Docker image |
+| [ui/Dockerfile](ui/Dockerfile) | UI Docker image |
+| [ui/nginx.conf](ui/nginx.conf) | Nginx server configuration |
+| [scripts/init-db.sql](scripts/init-db.sql) | Database initialization |
+| [scripts/wait-for-db.sh](scripts/wait-for-db.sh) | Database readiness script |
+
+### Network Architecture
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│ Docker Network: tradingstation-network                      │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│  ┌─────────────┐      ┌─────────────┐      ┌─────────────┐ │
+│  │ SQL Server  │      │  .NET API   │      │  React UI   │ │
+│  │     db      │◄─────┤     api     │◄─────┤     ui      │ │
+│  │  Port 1433  │      │  Port 8080  │      │  Port 80    │ │
+│  └─────────────┘      └─────────────┘      └─────────────┘ │
+│        │                     │                     │        │
+└────────┼─────────────────────┼─────────────────────┼────────┘
+         │                     │                     │
+    localhost:1433        localhost:5000       localhost:3000
+```
 
 ## Implementation Summary
 
@@ -478,15 +576,253 @@ Comprehensive documentation including:
    - Factory pattern for test data
    - Random data generation
 
+## Docker-Specific Test Configuration
+
+### Playwright Docker Config
+**File**: [ui/playwright.docker.config.ts](ui/playwright.docker.config.ts)
+
+Specialized configuration for Docker environment:
+- No webServer (services in containers)
+- Extended timeouts for container startup
+- Sequential test execution
+- Multiple reporters (HTML, JSON, JUnit)
+- Global setup/teardown hooks
+
+### Global Setup
+**File**: [ui/e2e/global-setup.ts](ui/e2e/global-setup.ts)
+
+Runs before all tests:
+- Waits for services (API, UI, DB) to be healthy
+- Validates `/health` endpoints
+- Seeds test data via API:
+  - Creates test accounts ($100K, $50K)
+  - Adds test stocks (AAPL, MSFT, GOOGL)
+- Configurable retry logic
+
+### Global Teardown
+**File**: [ui/e2e/global-teardown.ts](ui/e2e/global-teardown.ts)
+
+Runs after all tests:
+- Cleanup operations
+- Database persists for debugging
+
+### Test Orchestration Scripts
+
+#### PowerShell Script
+**File**: [scripts/run-e2e-tests.ps1](scripts/run-e2e-tests.ps1)
+
+Features:
+- Builds and starts Docker containers
+- Waits for health checks (120s timeout)
+- Installs Playwright browsers
+- Runs tests with Docker config
+- Generates test reports
+- Cleanup on exit (optional)
+
+Options:
+- `-NoCleanup` - Keep containers running
+- `-Headed` - Show browser during tests
+
+#### Bash Script
+**File**: [scripts/run-e2e-tests.sh](scripts/run-e2e-tests.sh)
+
+Same features as PowerShell script for Linux/Mac:
+- `--no-cleanup` flag
+- `--headed` flag
+- Color-coded output
+- Automatic cleanup on exit
+
+## Manual Docker Operations
+
+### Start Services Only
+
+```bash
+# Build images
+docker-compose build
+
+# Start all services
+docker-compose up -d
+
+# View logs
+docker-compose logs -f
+
+# Check status
+docker-compose ps
+```
+
+### Stop Services
+
+```bash
+# Stop containers
+docker-compose down
+
+# Stop and remove volumes (clean slate)
+docker-compose down -v
+```
+
+### Individual Service Operations
+
+```bash
+# Restart API
+docker-compose restart api
+
+# View API logs
+docker logs tradingstation-api -f
+
+# Execute command in container
+docker exec -it tradingstation-api bash
+
+# Connect to database
+docker exec -it tradingstation-db /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P TradingStation2024!
+```
+
+### Troubleshooting
+
+#### Check Health Status
+```bash
+docker inspect --format='{{.State.Health.Status}}' tradingstation-db
+docker inspect --format='{{.State.Health.Status}}' tradingstation-api
+docker inspect --format='{{.State.Health.Status}}' tradingstation-ui
+```
+
+#### View Container Logs
+```bash
+docker-compose logs --tail=100 db
+docker-compose logs --tail=100 api
+docker-compose logs --tail=100 ui
+```
+
+#### Rebuild After Code Changes
+```bash
+docker-compose up -d --build
+```
+
+## CI/CD Integration
+
+### GitHub Actions
+
+```yaml
+name: E2E Tests with Docker
+
+on: [push, pull_request]
+
+jobs:
+  e2e-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Run E2E Tests
+        run: |
+          chmod +x scripts/run-e2e-tests.sh
+          ./scripts/run-e2e-tests.sh
+
+      - name: Upload Test Results
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: playwright-report
+          path: ui/test-results/
+```
+
+### Azure DevOps
+
+```yaml
+trigger:
+  - main
+  - develop
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+  - script: |
+      chmod +x scripts/run-e2e-tests.sh
+      ./scripts/run-e2e-tests.sh
+    displayName: 'Run E2E Tests with Docker'
+
+  - task: PublishTestResults@2
+    condition: always()
+    inputs:
+      testResultsFormat: 'JUnit'
+      testResultsFiles: '**/junit.xml'
+      searchFolder: '$(System.DefaultWorkingDirectory)/ui/test-results'
+```
+
+## Files Created for Docker Integration
+
+### Docker Configuration
+```
+├── docker-compose.yml                       # Main services configuration
+├── docker-compose.test.yml                  # Test environment overrides
+├── src/Presentation/TradingStation.API/
+│   └── Dockerfile                           # API Docker image
+├── ui/
+│   ├── Dockerfile                           # UI Docker image
+│   └── nginx.conf                           # Nginx configuration
+└── scripts/
+    ├── init-db.sql                          # Database initialization
+    ├── wait-for-db.sh                       # DB readiness check
+    ├── run-e2e-tests.ps1                    # PowerShell orchestration
+    └── run-e2e-tests.sh                     # Bash orchestration
+```
+
+### Test Configuration
+```
+ui/
+├── playwright.docker.config.ts              # Docker-specific config
+└── e2e/
+    ├── global-setup.ts                      # Test setup & seeding
+    └── global-teardown.ts                   # Test cleanup
+```
+
+### API Changes
+```
+src/Presentation/TradingStation.API/
+└── Program.cs                               # Added health check & auto-migrations
+```
+
 ## Status
 
-**✅ All E2E Tests Complete and Functional**
+**✅ Complete Docker E2E Testing Infrastructure**
 
-- 94 test cases covering all major features
-- Complete user workflow validation
-- Specification compliance verified
-- CI/CD ready
-- Comprehensive documentation
-- All tests passing
+### Docker Infrastructure
+- ✅ SQL Server 2022 container with health checks
+- ✅ .NET 8 API container with auto-migrations
+- ✅ React UI container with Nginx
+- ✅ Docker Compose orchestration
+- ✅ Multi-stage optimized builds
+- ✅ Persistent volumes for debugging
 
-The Trading Station UI now has robust end-to-end test coverage ensuring reliability and preventing regressions.
+### Test Automation
+- ✅ 94 Playwright test cases covering all features
+- ✅ Complete user workflow validation
+- ✅ Docker-specific test configuration
+- ✅ Automated test data seeding
+- ✅ Global setup/teardown hooks
+- ✅ Health check validation
+
+### Orchestration
+- ✅ PowerShell script for Windows
+- ✅ Bash script for Linux/Mac
+- ✅ Automated container lifecycle
+- ✅ Test report generation
+- ✅ Cleanup on exit
+
+### Documentation
+- ✅ Quick start guide
+- ✅ Architecture diagrams
+- ✅ Troubleshooting guide
+- ✅ CI/CD examples
+- ✅ Manual operations guide
+
+### Specifications
+- ✅ Temporal safety validation
+- ✅ Performance metrics (Sharpe, drawdown, win rate)
+- ✅ Trading strategies configuration
+- ✅ Virtual account management
+- ✅ Historical data backtesting
+- ✅ Results visualization
+
+The Trading Station now has a complete, production-ready E2E testing infrastructure with Docker containerization, automated orchestration, and comprehensive test coverage.
