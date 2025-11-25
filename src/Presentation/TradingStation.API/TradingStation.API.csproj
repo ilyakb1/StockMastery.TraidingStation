@@ -19,7 +19,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Infrastructure\TradingStation.Infrastructure\TradingStation.Infrastructure.csproj" />
-    <ProjectReference Include="..\..\Application\TradingStation.Application\TradingStation.Application.csproj" />
     <ProjectReference Include="..\..\Core\TradingStation.TradingEngine\TradingStation.TradingEngine.csproj" />
     <ProjectReference Include="..\..\Application\TradingStation.Backtesting\TradingStation.Backtesting.csproj" />
   </ItemGroup>
